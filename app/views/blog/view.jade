@@ -1,0 +1,57 @@
+extends layout
+
+append css
+    link(rel='stylesheet', href='/css/blog.css')
+    link(rel='stylesheet', href='/components/font-awesome/css/font-awesome.css')
+
+block content
+    div.container
+        div.post-view.col-sm-8
+            h1= post.title
+            div.post-meta
+                    i.fa.fa-calendar
+                    span.post-created 发布时间:
+                        =moment(post.created).format('YYYY-MM-DD')
+                    i.fa.fa-user
+                    span.post-author 作者:
+                        =post.author.name
+                    i.fa.fa-briefcase
+                    span.post-category 类别:
+                        a(herf="/posts/category" + post.category.name,target="_blank")
+                            =post.category.name
+                    i.fa.fa-bars
+                    span.post-comments 评论:
+                        =post.comments.length || 0
+                    i#like.fa.fa-thumbs-o-up
+                    span.post-favorite 被赞:
+                        =post.meta.favarites || 0
+            div.blog-content= post.content
+            div.post-comments.panel.panel-info
+                div.panel-heading 用户评论
+
+
+                div.post-comment-list.panel-body
+                        if post.comments.length > 0
+                            each comment in post.comments
+                                table.table.table-hover.table-striped
+                                    tr
+                                        td= comment.email
+                                    tr
+                                        td= comment.content
+                        else
+                            p.alert.alert-info 没有评论
+
+            h3 添加评论
+            form.post-comment-form(action="/posts/comment/" + post._id,method="post",enctype="application/x-www-form-urlencoded")
+                        .form-group
+                            label.control-label 邮箱
+                            input.form-control(type="text", name="email",placeholder="请输入你的邮箱")
+                        .form-group
+                            label.control-label 评论
+                            textarea.form-control(type="text", name="content",placeholder="请输入你的评论")
+                        button.btn.btn-primary 提交
+
+
+
+    script(src='/components/jquery/dist/jquery.js')
+    script(src='/js/view.js')

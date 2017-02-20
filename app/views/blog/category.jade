@@ -1,0 +1,37 @@
+extends layout
+
+
+block content
+    div.container
+        each post in posts
+            div.post.col-sm-8
+                h3.post-title
+                    a(href="/posts/view/" + post._id,target="_blank")
+                        =post.title
+                div.post-abstract
+                    =truncate(post.content,160)
+                div.post-meta
+                    span.post-created 发布时间:
+                        =moment(post.created).format('YYYY-MM-DD')
+                    span.post-author 作者:
+                        =post.author.name
+                    span.post-category 类别:
+                    a(href="/posts/category" + post.category.name,target="_blank")
+                        =post.category.name
+                    span.post-comments &nbsp;评论:
+                        =post.comments.length || 0
+                    span.post-favorite 被赞:
+                        =post.meta.favarites || 0
+                    a.post-link.btn.btn-primary(href="/posts/view/"+ post._id,target="_blank") 查看全文
+
+        if pageCount > 1
+            nav
+                ul.pagination.col-sm-8
+                    - var currentPage = 1
+                    while currentPage < pageCount
+                        if currentPage == pageNum
+                            li.active
+                                a(href="posts?page=" + currentPage)= currentPage++
+                        else
+                            li
+                                a(href="posts?page=" + currentPage)= currentPage++
