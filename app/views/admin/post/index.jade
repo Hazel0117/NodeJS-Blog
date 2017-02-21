@@ -1,0 +1,81 @@
+extends layout
+
+block content
+    div.container
+
+        table.table.table-bordered.table-hover
+            thead
+                th(width="30%")
+                    if sortby === 'title'
+                        if sortdir === 'asc'
+                            a(href="/admin/posts?page=" + pageNum + "&sortby=title&sortdir=desc") 
+                                i.fa.fa-arrow-up &nbsp;标题
+                        if sortdir === 'desc'
+                            a(href="/admin/posts?page=" + pageNum + "&sortby=title&sortdir=asc") 
+                                i.fa.fa-arrow-down &nbsp;标题
+                    else
+                        a(href="/admin/posts?page=" + pageNum + "&sortby=title&sortdir=asc") 标题
+                    
+                th 
+                    if sortby === 'category'
+                        if sortdir === 'asc'
+                            a(href="/admin/posts?page=" + pageNum + "&sortby=category&sortdir=desc") 
+                                i.fa.fa-arrow-up &nbsp;分类
+                        if sortdir === 'desc'
+                            a(href="/admin/posts?page=" + pageNum + "&sortby=category&sortdir=asc") 
+                                i.fa.fa-arrow-down &nbsp;分类
+                    else
+                        a(href="/admin/posts?page=" + pageNum + "&sortby=category&sortdir=asc") 分类
+                th 作者
+                th 
+                    if sortby === 'created'
+                        if sortdir === 'asc'
+                            a(href="/admin/posts?page=" + pageNum + "&sortby=created&sortdir=desc") 
+                                i.fa.fa-arrow-up &nbsp;时间
+                        if sortdir === 'desc'
+                            a(href="/admin/posts?page=" + pageNum + "&sortby=created&sortdir=asc") 
+                                i.fa.fa-arrow-down &nbsp;时间
+                    else
+                        a(href="/admin/posts?page=" + pageNum + "&sortby=created&sortdir=asc") 时间
+                th 被赞
+                th 评论
+                th 状态
+                th 管理
+            tbody
+            each post in posts
+                tr
+                    td
+                        a(herf="/posts/view/" + post._id,target="_blank")= post.title
+                    td= post.category.name
+                    td= post.author.email
+                    td= moment(post.created).format('YYYY-MM-DD')
+                    td= post.meta.favarites || 0
+                    td= post.comments.length || 0
+                    td= post.published ? "已发布":"未发布"
+                    td
+                        a.btn.btn-primary.btn-mini.admin-btn(href="/posts/view/" + post._id, target="_blank") 查看
+                        a.btn.btn-info.admin-btn(href="/admin/posts/edit/" + post._id, target="_blank") 编辑
+                        a#delete.btn.btn-danger.admin-btn(href="/admin/posts/delete/" + post._id) 删除
+
+        if pageCount > 1
+        ul.pagination.col-sm-8
+            if pageNum > 1
+                li.page-item
+                    a(href="?page=" + (pageNum - 1) + "&sortby=" + sortby + "&sortdir=" + sordtir) &laquo;
+            - var currentPage = 1
+            while currentPage < pageCount
+                if currentPage == pageNum
+                    li.active.page-item
+                        a(href="?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir)= currentPage++
+                else
+                    li.page-item
+                        a(href="?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir)= currentPage++
+            if pageNum < pageCount - 1
+                li.page-item
+                    a(href="posts?page=" + (pageNum + 1) + "&sortby=" + sortby + "&sortdir=" + sortdir) &raquo;
+
+    script(src='/components/jquery/dist/jquery.js')
+    script(src='/js/view.js')
+
+
+
