@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Post = mongoose.model('Post');
+var slug = require('slug');
+var User = mongoose.model('User');
 
 module.exports = function(app) {
 	app.use('/admin/posts',router);
@@ -61,6 +63,34 @@ router.get('/delete/:id', function(req,res,next) {
 
 router.get('/add',function(req,res,next) {
     res.render('admin/post/add');
+
+});
+router.post('/add',function(req,res,next) {
+    var title = req.body.title.trim();
+    var category = req.body.category.trim();
+    var content = req.body.content;
+
+    User.findOne({}, function(err,author) {
+      var post = new Post({
+        title: title,
+        slug: slug(title),
+        category: category,
+        content: content,
+        author: author,
+        created: new Date(),
+        published: true,
+        meta: {favarites: 0},
+        comments: []
+      });
+
+      post.save(function(err,post) {
+        if (err) {
+          res.redirect('/admin/posts');
+          return next(err);
+        }
+        res.redirect('/admin/posts');
+      });
+    });
 
 });
 

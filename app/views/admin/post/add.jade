@@ -1,1 +1,21 @@
 extends layout
+
+block content
+    div.container
+        h1 添加文章
+
+        form.vertical-form(method="post",action="add")
+            div.form-group
+                label.control-label 文章标题:
+                input.form-control(name="title",required="true")
+            div.form-group
+                label.control-label 文章分类:
+                select.input-sm.form-control(name="category",required="true")
+                    option(value="", select="true") -请选择文章分类-
+                    each category in categories
+                        option(value=category._id)= category.name
+            div.form-group
+                label.control-label 文章内容:
+                textarea.form-control(name="content",required="true")
+
+            button.btn.btn-info(type="submit") 发布文章
