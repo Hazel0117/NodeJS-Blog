@@ -94,3 +94,28 @@ router.post('/add',function(req,res,next) {
 
 });
 
+router.get('/edit/:id',function(req,res,next) {
+  if (!req.params.id) {
+    return next(new Error('no post id provided'));
+  }
+    Post.findOne({_id: req.params.id})
+    .populate('category')
+    .populate('author')
+    .exec(function(err,post) {
+      if (err) {
+        return next(err);
+      }
+      
+      res.render('/admin/post/add', {
+        post:post
+      });
+    });
+  });
+
+router.get('/edit/:id', function(req,res,next) {
+  if (!req.params.id) {
+    return next(new Error('no post id provided'));
+  }
+  Post.findOne({_id: req.params.id})
+})
+
